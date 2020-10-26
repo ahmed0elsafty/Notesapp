@@ -1,8 +1,10 @@
-package com.elsafty.notesapp;
+package com.elsafty.notesapp.activities;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.elsafty.notesapp.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 
