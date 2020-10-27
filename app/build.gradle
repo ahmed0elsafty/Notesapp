@@ -13,6 +13,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     buildTypes {
         release {
@@ -39,6 +43,8 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     //Rounded imageView
     implementation 'com.makeramen:roundedimageview:2.3.0'
-
+    //Butter Knife
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 
 }
