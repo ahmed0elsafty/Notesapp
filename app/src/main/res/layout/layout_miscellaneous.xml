@@ -32,6 +32,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
+            <View
+                android:id="@+id/viewColor1"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:background="@drawable/background_note_color_1" />
             <ImageView
                 android:id="@+id/imageColor1"
                 android:layout_width="@dimen/_35sdp"
@@ -40,12 +45,6 @@
                 android:padding="@dimen/_10sdp"
                 android:src="@drawable/ic_done"
                 app:tint="@color/colorWhite" />
-
-            <View
-                android:id="@+id/viewColor1"
-                android:layout_width="@dimen/_35sdp"
-                android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/background_note_color_1" />
         </FrameLayout>
 
         <FrameLayout
@@ -53,6 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
+            <View
+                android:id="@+id/viewColor2"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:background="@drawable/background_note_color_2" />
             <ImageView
                 android:id="@+id/imageColor2"
                 android:layout_width="@dimen/_35sdp"
@@ -60,18 +64,18 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_10sdp"
                 app:tint="@color/colorWhite" />
-
-            <View
-                android:id="@+id/viewColor2"
-                android:layout_width="@dimen/_35sdp"
-                android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/background_note_color_2" />
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
+
+            <View
+                android:id="@+id/viewColor3"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:background="@drawable/background_note_color_3" />
 
             <ImageView
                 android:id="@+id/imageColor3"
@@ -80,18 +84,18 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_10sdp"
                 app:tint="@color/colorWhite" />
-
-            <View
-                android:id="@+id/viewColor3"
-                android:layout_width="@dimen/_35sdp"
-                android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/background_note_color_3" />
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
+
+            <View
+                android:id="@+id/viewColor4"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:background="@drawable/background_note_color_4" />
 
             <ImageView
                 android:id="@+id/imageColor4"
@@ -100,18 +104,18 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_10sdp"
                 app:tint="@color/colorWhite" />
-
-            <View
-                android:id="@+id/viewColor4"
-                android:layout_width="@dimen/_35sdp"
-                android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/background_note_color_4" />
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
+
+            <View
+                android:id="@+id/viewColor5"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:background="@drawable/background_note_color_5" />
 
             <ImageView
                 android:id="@+id/imageColor5"
@@ -120,12 +124,6 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_10sdp"
                 app:tint="@color/colorWhite" />
-
-            <View
-                android:id="@+id/viewColor5"
-                android:layout_width="@dimen/_35sdp"
-                android:layout_height="@dimen/_35sdp"
-                android:background="@drawable/background_note_color_5" />
         </FrameLayout>
 
         <TextView

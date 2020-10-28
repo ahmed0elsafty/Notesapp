@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
         imageAddNoteMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(MainActivity.this, CreateNoteActivity.class), REQUEST_CODE_ADD_NOTE);
+                Intent intent = new Intent(MainActivity.this, CreateNoteActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
             }
         });
         mAdapter.setList(mNotes);
