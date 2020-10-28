@@ -113,6 +113,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/inputNoteSubtitle" />
 
+            <ImageView
+                android:id="@+id/imageNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/subtitle_indecator"
+                android:contentDescription="@string/app_name" />
+
+
+
             <EditText
                 android:id="@+id/inputNote"
                 android:layout_width="0dp"
@@ -135,7 +149,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inputNoteSubtitle" />
+                app:layout_constraintTop_toBottomOf="@+id/imageNote" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

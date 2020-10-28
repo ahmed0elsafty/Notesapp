@@ -103,20 +103,6 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageAddNoteMain"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/background_add_button"
-        android:padding="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_30sdp"
-        android:src="@drawable/ic_add"
-        app:layout_constraintBottom_toTopOf="@+id/layout_quickActions"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/layout_quickActions"
-        app:tint="@color/colorPrimary"
-        android:contentDescription="@string/app_name" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notes_recyclerView"
         android:layout_width="match_parent"
@@ -131,4 +117,18 @@
         app:layout_constraintEnd_toStartOf="@+id/imageAddNoteMain"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+
+    <ImageView
+        android:id="@+id/imageAddNoteMain"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginEnd="@dimen/_30sdp"
+        android:background="@drawable/background_add_button"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/_5sdp"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toTopOf="@+id/layout_quickActions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/layout_quickActions"
+        app:tint="@color/colorPrimary" />
 </androidx.constraintlayout.widget.ConstraintLayout>

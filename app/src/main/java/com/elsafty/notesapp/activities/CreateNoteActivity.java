@@ -1,10 +1,19 @@
 package com.elsafty.notesapp.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,11 +26,17 @@ import com.elsafty.notesapp.database.NoteDatabase;
 import com.elsafty.notesapp.entities.Note;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -42,7 +57,13 @@ public class CreateNoteActivity extends AppCompatActivity {
     View subtitleIndecator;
     @BindView(R.id.inputNote)
     EditText inputNote;
+    @BindView(R.id.imageNote)
+    ImageView imageNote;
     private String selectedNoteColor = "#333333";
+    private String selectedImagePath = "";
+    private static final int REQUEST_CODE_STORAGE_PERMISSION = 720;
+    private static final int REQUEST_CODE_SELECT_IMAGE = 246;
+    private static final String TAG = CreateNoteActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +74,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 Locale.getDefault()).format(new Date()));
         initLayoutMiscellaneous();
         setSubtitleIndecatorColor();
+
     }
 
     private void saveNote() {
@@ -70,6 +92,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setDateTime(textDateTime.getText().toString());
         note.setNoteText(inputNote.getText().toString().trim());
         note.setColor(selectedNoteColor);
+        note.setImagePath(selectedImagePath);
         class InsertNoteasyncTask extends AsyncTask<Void, Void, Void> {
 
             @Override
@@ -157,6 +180,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 setSubtitleIndecatorColor();
             }
         });
+
         layoutMiscellaneous.findViewById(R.id.viewColor4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,10 +206,82 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        layoutMiscellaneous.findViewById(R.id.layout_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if (ContextCompat.checkSelfPermission(
+                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(CreateNoteActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_STORAGE_PERMISSION);
+                } else {
+                    selectImage();
+                }
+            }
+        });
+
+
+    }
+
+    private void selectImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
+        }
     }
 
     private void setSubtitleIndecatorColor() {
         GradientDrawable gradientDrawable = (GradientDrawable) subtitleIndecator.getBackground();
         gradientDrawable.setColor(Color.parseColor(selectedNoteColor));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_STORAGE_PERMISSION && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                selectImage();
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                Uri selectedImageUri = data.getData();
+                try {
+                    if (selectedImageUri!=null){
+                        InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                        Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
+                        imageNote.setImageBitmap(imageBitmap);
+                        imageNote.setVisibility(View.VISIBLE);
+                    }else {
+                        imageNote.setVisibility(View.GONE);
+                    }
+                }catch (Exception e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                selectedImagePath = getPathFromUri(selectedImageUri);
+            }
+        }
+    }
+
+    private String getPathFromUri(Uri contentUri){
+        String filePath;
+        Cursor cursor = getContentResolver().query(contentUri,
+                null,null,null,null);
+        if (cursor==null){
+            filePath = contentUri.getPath();
+        }else {
+            cursor.moveToFirst();
+            int dataColumn = cursor.getColumnIndex("_data");
+            filePath = cursor.getString(dataColumn);
+            cursor.close();
+        }
+        return filePath;
     }
 }
