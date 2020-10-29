@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
     private List<Note> items = new ArrayList<>();
-    private Context mContext;
+    private final Context mContext;
 
     public NoteAdapter(Context mContext) {
         this.mContext = mContext;
@@ -57,7 +57,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
     class NoteViewHolder extends RecyclerView.ViewHolder {
-        private TextView textTitle,textSubtitle,textDateTime;
+        private TextView textTitle;
+        private TextView textSubtitle;
+        private TextView textDateTime;
         private LinearLayout layoutNote;
         private RoundedImageView noteImage;
         public NoteViewHolder(@NonNull View itemView) {

@@ -8,4 +8,8 @@
     <string name="miscellaneous">Miscellaneous</string>
     <string name="pick_color">Pick Color</string>
     <string name="add_image">Add Image</string>
+    <string name="add_link">Add Link</string>
+    <string name="type_a_link">Type a link</string>
+    <string name="add_action">Add</string>
+    <string name="cancel_action">Cancel</string>
 </resources>

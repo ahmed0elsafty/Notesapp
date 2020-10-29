@@ -7,7 +7,6 @@
     android:background="@color/colorPrimary"
     tools:context=".activities.CreateNoteActivity">
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu_regular"
-                android:includeFontPadding="false"
+                android:includeFontPadding="true"
                 android:textColor="@color/colorIcons"
                 android:gravity="center"
                 android:textSize="10.00sp"
@@ -125,6 +124,29 @@
                 app:layout_constraintTop_toBottomOf="@id/subtitle_indecator"
                 android:contentDescription="@string/app_name" />
 
+            <LinearLayout
+                android:id="@+id/layout_addLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/imageNote">
+
+                <TextView
+                    android:id="@+id/linkText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoLink="web"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:includeFontPadding="false"
+                    android:textSize="@dimen/_13ssp" />
+
+            </LinearLayout>
 
 
             <EditText
@@ -149,7 +171,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageNote" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_addLink" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

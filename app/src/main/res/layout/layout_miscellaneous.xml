@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_miscellaneous"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -136,27 +137,63 @@
             android:textSize="@dimen/_13ssp" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/layout_image"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="@dimen/_35sdp"
-            android:layout_height="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+    <ImageView
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
             android:contentDescription="@string/app_name"
-            android:layout_marginStart="@dimen/_12sdp"
-            android:layout_marginEnd="@dimen/_12sdp"
             android:src="@drawable/ic_image"
-            app:tint="@color/colorWhite" />
+            app:tint="@color/colorIcons" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_image"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_10sdp"
             android:fontFamily="@font/ubuntu_medium"
-            android:textSize="@dimen/_15ssp"
-            android:textColor="@color/colorWhite"
-            android:layout_gravity="center_vertical"/>
+            android:includeFontPadding="false"
+            android:text="@string/add_image"
+            android:textColor="@color/colorIcons"
+            android:textSize="@dimen/_12ssp" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_link"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_link"
+            app:tint="@color/colorIcons" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:fontFamily="@font/ubuntu_medium"
+            android:includeFontPadding="false"
+            android:text="@string/add_link"
+            android:textColor="@color/colorIcons"
+            android:textSize="@dimen/_12ssp" />
 
     </LinearLayout>
 </LinearLayout>

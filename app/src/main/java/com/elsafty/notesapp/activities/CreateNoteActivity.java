@@ -2,19 +2,23 @@ package com.elsafty.notesapp.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,11 +63,19 @@ public class CreateNoteActivity extends AppCompatActivity {
     EditText inputNote;
     @BindView(R.id.imageNote)
     ImageView imageNote;
+    @BindView(R.id.layout_addLink)
+    LinearLayout layoutAddLink;
+    @BindView(R.id.linkText)
+    TextView linkText;
+
+
     private String selectedNoteColor = "#333333";
     private String selectedImagePath = "";
+    private String inputLink = "";
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 720;
     private static final int REQUEST_CODE_SELECT_IMAGE = 246;
     private static final String TAG = CreateNoteActivity.class.getSimpleName();
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +105,9 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setNoteText(inputNote.getText().toString().trim());
         note.setColor(selectedNoteColor);
         note.setImagePath(selectedImagePath);
+        if (layoutAddLink.getVisibility() == View.VISIBLE) {
+            note.setWebLink(inputLink);
+        }
         class InsertNoteasyncTask extends AsyncTask<Void, Void, Void> {
 
             @Override
@@ -220,6 +235,14 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        layoutMiscellaneous.findViewById(R.id.layout_link).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                showLinkDialog();
+            }
+        });
+
 
     }
 
@@ -254,15 +277,15 @@ public class CreateNoteActivity extends AppCompatActivity {
             if (data != null) {
                 Uri selectedImageUri = data.getData();
                 try {
-                    if (selectedImageUri!=null){
+                    if (selectedImageUri != null) {
                         InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                         Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
                         imageNote.setImageBitmap(imageBitmap);
                         imageNote.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         imageNote.setVisibility(View.GONE);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 selectedImagePath = getPathFromUri(selectedImageUri);
@@ -270,18 +293,55 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
-    private String getPathFromUri(Uri contentUri){
+    private String getPathFromUri(Uri contentUri) {
         String filePath;
         Cursor cursor = getContentResolver().query(contentUri,
-                null,null,null,null);
-        if (cursor==null){
+                null, null, null, null);
+        if (cursor == null) {
             filePath = contentUri.getPath();
-        }else {
+        } else {
             cursor.moveToFirst();
             int dataColumn = cursor.getColumnIndex("_data");
             filePath = cursor.getString(dataColumn);
             cursor.close();
         }
         return filePath;
+    }
+
+    private void showLinkDialog() {
+        if (alertDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.link_layout,
+                    (ViewGroup) findViewById(R.id.layout_linkDialog));
+            builder.setView(view);
+            alertDialog = builder.create();
+            if (alertDialog.getWindow() != null) {
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+            EditText inputUrl = view.findViewById(R.id.input_linkAddress);
+            inputUrl.requestFocus();
+            view.findViewById(R.id.text_addAction).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (inputUrl.getText().toString().trim().isEmpty()) {
+                        Toast.makeText(CreateNoteActivity.this, "Enter URL", Toast.LENGTH_SHORT).show();
+                    } else if (!Patterns.WEB_URL.matcher(inputUrl.getText().toString().trim()).matches()) {
+                        Toast.makeText(CreateNoteActivity.this, "Sorry!, Enter Valid URL", Toast.LENGTH_SHORT).show();
+                    } else {
+                        inputLink = inputUrl.getText().toString().trim();
+                        linkText.setText(inputLink);
+                        alertDialog.dismiss();
+                        layoutAddLink.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+            view.findViewById(R.id.text_cancelAction).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+        }
+        alertDialog.show();
     }
 }
