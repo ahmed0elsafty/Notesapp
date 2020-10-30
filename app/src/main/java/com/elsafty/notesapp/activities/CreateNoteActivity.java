@@ -69,9 +69,9 @@ public class CreateNoteActivity extends AppCompatActivity {
     TextView linkText;
 
 
-    private String selectedNoteColor = "#333333";
-    private String selectedImagePath = "";
-    private String inputLink = "";
+    private String selectedNoteColor;
+    private String selectedImagePath;
+    private Note alreadyAvailablenote;
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 720;
     private static final int REQUEST_CODE_SELECT_IMAGE = 246;
     private static final String TAG = CreateNoteActivity.class.getSimpleName();
@@ -84,10 +84,35 @@ public class CreateNoteActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         textDateTime.setText(new SimpleDateFormat("EEEE,dd MMMM yyyy HH:mm a",
                 Locale.getDefault()).format(new Date()));
+        selectedNoteColor = "#333333";
+        selectedImagePath = "";
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getBooleanExtra("isViewOrUpdate", false)) {
+                alreadyAvailablenote = (Note) intent.getSerializableExtra("note");
+                setViewORUpdateNote();
+            }
+        }
         initLayoutMiscellaneous();
         setSubtitleIndecatorColor();
-
     }
+
+    private void setViewORUpdateNote() {
+        inputNoteTitle.setText(alreadyAvailablenote.getTitle());
+        inputNoteSubtitle.setText(alreadyAvailablenote.getSubtitle());
+        inputNote.setText(alreadyAvailablenote.getNoteText());
+        textDateTime.setText(alreadyAvailablenote.getDateTime());
+        if (alreadyAvailablenote.getImagePath() != null && !alreadyAvailablenote.getImagePath().trim().isEmpty()) {
+            imageNote.setVisibility(View.VISIBLE);
+            imageNote.setImageBitmap(BitmapFactory.decodeFile(alreadyAvailablenote.getImagePath()));
+            selectedImagePath = alreadyAvailablenote.getImagePath();
+        }
+        if (alreadyAvailablenote.getWebLink() != null && !alreadyAvailablenote.getWebLink().trim().isEmpty()) {
+            layoutAddLink.setVisibility(View.VISIBLE);
+            linkText.setText(alreadyAvailablenote.getWebLink());
+        }
+    }
+
 
     private void saveNote() {
         if (inputNoteTitle.getText().toString().trim().isEmpty()) {
@@ -106,7 +131,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setColor(selectedNoteColor);
         note.setImagePath(selectedImagePath);
         if (layoutAddLink.getVisibility() == View.VISIBLE) {
-            note.setWebLink(inputLink);
+            note.setWebLink(linkText.getText().toString().trim());
+        }
+        if (alreadyAvailablenote !=null){
+            note.setId(alreadyAvailablenote.getId());
         }
         class InsertNoteasyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -221,6 +249,24 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        if (alreadyAvailablenote !=null && alreadyAvailablenote.getColor() != null && !alreadyAvailablenote.getColor().trim().isEmpty()) {
+            switch (alreadyAvailablenote.getColor()) {
+                case "#FDBE3B":
+                    layoutMiscellaneous.findViewById(R.id.viewColor2).performClick();
+                    break;
+                case "#FF4842":
+                    layoutMiscellaneous.findViewById(R.id.viewColor3).performClick();
+                    break;
+                case "#3A52FC":
+                    layoutMiscellaneous.findViewById(R.id.viewColor4).performClick();
+                    break;
+                case "#000000":
+                    layoutMiscellaneous.findViewById(R.id.viewColor5).performClick();
+                    break;
+
+            }
+        }
+
         layoutMiscellaneous.findViewById(R.id.layout_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -328,8 +374,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                     } else if (!Patterns.WEB_URL.matcher(inputUrl.getText().toString().trim()).matches()) {
                         Toast.makeText(CreateNoteActivity.this, "Sorry!, Enter Valid URL", Toast.LENGTH_SHORT).show();
                     } else {
-                        inputLink = inputUrl.getText().toString().trim();
-                        linkText.setText(inputLink);
+                        linkText.setText(inputUrl.getText().toString().trim());
                         alertDialog.dismiss();
                         layoutAddLink.setVisibility(View.VISIBLE);
                     }
