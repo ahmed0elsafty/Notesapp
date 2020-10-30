@@ -124,6 +124,21 @@
                 app:layout_constraintTop_toBottomOf="@id/subtitle_indecator"
                 android:contentDescription="@string/app_name" />
 
+            <ImageView
+                android:id="@+id/removeNoteImage"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="@drawable/background_delete"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/imageNote"
+                app:layout_constraintTop_toTopOf="@id/imageNote"
+                app:tint="@color/colorWhite" />
+
             <LinearLayout
                 android:id="@+id/layout_addLink"
                 android:layout_width="match_parent"
@@ -145,6 +160,16 @@
                     android:fontFamily="@font/ubuntu_regular"
                     android:includeFontPadding="false"
                     android:textSize="@dimen/_13ssp" />
+
+                <ImageView
+                    android:id="@+id/removelink"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:background="@drawable/ic_delete"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_delete"
+                    app:tint="@color/colorWhite"/>
 
             </LinearLayout>
 

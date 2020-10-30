@@ -69,6 +69,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     TextView linkText;
 
 
+
     private String selectedNoteColor;
     private String selectedImagePath;
     private Note alreadyAvailablenote;
@@ -93,6 +94,24 @@ public class CreateNoteActivity extends AppCompatActivity {
                 setViewORUpdateNote();
             }
         }
+        findViewById(R.id.removelink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linkText.setText("");
+                layoutAddLink.setVisibility(View.GONE);
+            }
+        });
+
+        findViewById(R.id.removeNoteImage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageNote.setVisibility( View.GONE);
+                selectedImagePath= "";
+                imageNote.setImageBitmap(null);
+                findViewById(R.id.removeNoteImage).setVisibility(View.GONE);
+
+            }
+        });
         initLayoutMiscellaneous();
         setSubtitleIndecatorColor();
     }
@@ -104,11 +123,13 @@ public class CreateNoteActivity extends AppCompatActivity {
         textDateTime.setText(alreadyAvailablenote.getDateTime());
         if (alreadyAvailablenote.getImagePath() != null && !alreadyAvailablenote.getImagePath().trim().isEmpty()) {
             imageNote.setVisibility(View.VISIBLE);
+            findViewById(R.id.removeNoteImage).setVisibility(View.VISIBLE);
             imageNote.setImageBitmap(BitmapFactory.decodeFile(alreadyAvailablenote.getImagePath()));
             selectedImagePath = alreadyAvailablenote.getImagePath();
         }
         if (alreadyAvailablenote.getWebLink() != null && !alreadyAvailablenote.getWebLink().trim().isEmpty()) {
             layoutAddLink.setVisibility(View.VISIBLE);
+            findViewById(R.id.removelink).setVisibility(View.VISIBLE);
             linkText.setText(alreadyAvailablenote.getWebLink());
         }
     }
