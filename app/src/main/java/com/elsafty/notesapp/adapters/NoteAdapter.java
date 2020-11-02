@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,8 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +31,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     private List<Note> items = new ArrayList<>();
     private final Context mContext;
     private OnNoteClickedListener onNoteClickedListener;
+    private List<Note> searchNotes;
+    private Timer timer;
 
     public NoteAdapter(Context mContext, OnNoteClickedListener onNoteClickedListener) {
         this.mContext = mContext;
@@ -45,7 +51,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.layoutNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onNoteClickedListener.onClick(items.get(position),position);
+                onNoteClickedListener.onClick(items.get(position), position);
             }
         });
     }
@@ -62,6 +68,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     public void setList(List<Note> items) {
         this.items = items;
+        searchNotes = items;
         notifyDataSetChanged();
     }
 
@@ -104,6 +111,40 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                 noteImage.setVisibility(View.GONE);
             }
 
+        }
+    }
+
+    public void searchNotes(String searchKeyword) {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (searchKeyword.trim().isEmpty()) {
+                    items = searchNotes;
+                } else {
+                    ArrayList<Note> temp = new ArrayList<>();
+                    for (Note note : items) {
+                        if (note.getTitle().toLowerCase().contains(searchKeyword.toLowerCase()) ||
+                                note.getSubtitle().toLowerCase().contains(searchKeyword.toLowerCase()) ||
+                                note.getNoteText().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                            temp.add(note);
+                        }
+                    }
+                    items = temp;
+                }
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }, 500);
+    }
+
+    public void cancelTimer() {
+        if (timer != null) {
+            timer.cancel();
         }
     }
 }
