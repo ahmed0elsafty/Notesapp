@@ -1,5 +1,6 @@
 package com.elsafty.notesapp.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
     RecyclerView notesRecyclerView;
     private NoteAdapter mAdapter;
     private List<Note> mNotes;
-    private int noteClicledPosition = -1;
+    private int noteClickedPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +63,11 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
         mAdapter.setList(mNotes);
         notesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         notesRecyclerView.setAdapter(mAdapter);
-        getAllNotes(REQUEST_CODE_SHOW_NOTES);
+        getAllNotes(REQUEST_CODE_SHOW_NOTES,false);
     }
 
-    private void getAllNotes(int requestCode) {
+    private void getAllNotes(int requestCode,boolean isNoteDeleted) {
+        @SuppressLint("StaticFieldLeak")
         class GetNotesAsyncTask extends AsyncTask<Void, Void, List<Note>> {
 
             @Override
@@ -85,9 +87,13 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
                     mAdapter.notifyItemInserted(0);
                     notesRecyclerView.smoothScrollToPosition(0);
                 } else if (requestCode == REQUEST_CODE_UPDATE_NOTE) {
-                    mNotes.remove(noteClicledPosition);
-                    mNotes.add(noteClicledPosition, notes.get(noteClicledPosition));
-                    mAdapter.notifyItemChanged(noteClicledPosition);
+                    mNotes.remove(noteClickedPosition);
+                    if (isNoteDeleted){
+                        mAdapter.notifyItemRemoved(noteClickedPosition);
+                    }else {
+                        mNotes.add(noteClickedPosition, notes.get(noteClickedPosition));
+                        mAdapter.notifyItemChanged(noteClickedPosition);
+                    }
                 }
 
             }
@@ -99,17 +105,17 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK) {
-            getAllNotes(REQUEST_CODE_ADD_NOTE);
+            getAllNotes(REQUEST_CODE_ADD_NOTE,false);
         } else if (requestCode == REQUEST_CODE_UPDATE_NOTE && resultCode == RESULT_OK) {
             if (data != null) {
-                getAllNotes(REQUEST_CODE_UPDATE_NOTE);
+                getAllNotes(REQUEST_CODE_UPDATE_NOTE,data.getBooleanExtra("isNoteDeleted",false));
             }
         }
     }
 
     @Override
     public void onClick(Note note, int position) {
-        noteClicledPosition = position;
+        noteClickedPosition = position;
         Intent intent = new Intent(this, CreateNoteActivity.class);
         intent.putExtra("note", note);
         intent.putExtra("isViewOrUpdate", true);
