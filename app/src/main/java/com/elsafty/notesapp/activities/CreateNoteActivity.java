@@ -93,6 +93,17 @@ public class CreateNoteActivity extends AppCompatActivity {
             if (intent.getBooleanExtra("isViewOrUpdate", false)) {
                 alreadyAvailablenote = (Note) intent.getSerializableExtra("note");
                 setViewORUpdateNote();
+            }else if (intent.getBooleanExtra("isFromQuickActions", false)){
+                String type = intent.getStringExtra("quickActionType");
+                if (type.toLowerCase().equals("image")){
+                    selectedImagePath = intent.getStringExtra("imagePath");
+                    imageNote.setVisibility(View.VISIBLE);
+                    imageNote.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
+                    findViewById(R.id.removeNoteImage).setVisibility(View.VISIBLE);
+                }else if (type.toLowerCase().equals("url")){
+                    linkText.setText(intent.getStringExtra("stringUrl"));
+                    layoutAddLink.setVisibility(View.VISIBLE);
+                }
             }
         }
         findViewById(R.id.removelink).setOnClickListener(new View.OnClickListener() {
@@ -442,7 +453,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
             EditText inputUrl = view.findViewById(R.id.input_linkAddress);
             inputUrl.requestFocus();
-            view.findViewById(R.id.text_deleteAction).setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.text_addAction).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (inputUrl.getText().toString().trim().isEmpty()) {
