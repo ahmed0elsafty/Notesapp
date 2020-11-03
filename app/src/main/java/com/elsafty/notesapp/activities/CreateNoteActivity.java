@@ -103,6 +103,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 }else if (type.toLowerCase().equals("url")){
                     linkText.setText(intent.getStringExtra("stringUrl"));
                     layoutAddLink.setVisibility(View.VISIBLE);
+                    findViewById(R.id.removelink).setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -415,6 +416,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                         Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
                         imageNote.setImageBitmap(imageBitmap);
                         imageNote.setVisibility(View.VISIBLE);
+                        findViewById(R.id.removeNoteImage).setVisibility(View.VISIBLE);
+
                     } else {
                         imageNote.setVisibility(View.GONE);
                     }

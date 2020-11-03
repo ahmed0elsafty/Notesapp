@@ -19,7 +19,11 @@ import com.elsafty.notesapp.entities.Note;
 import com.elsafty.notesapp.listeners.OnNoteClickedListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -95,7 +99,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             } else {
                 textSubtitle.setText(note.getSubtitle());
             }
-            textDateTime.setText(note.getDateTime());
+            textDateTime.setText(parseDate(note.getDateTime()));
             GradientDrawable gradientDrawable = (GradientDrawable) layoutNote.getBackground();
             if (note.getColor() != null) {
                 gradientDrawable.setColor(Color.parseColor(note.getColor()));
@@ -146,5 +150,26 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         if (timer != null) {
             timer.cancel();
         }
+    }
+    private String parseDate(String dateStr){
+
+        try {
+
+            DateFormat srcDf = new SimpleDateFormat("EEEE,dd MMMM yyyy HH:mm a");
+
+            // parse the date string into Date object
+            Date date = srcDf.parse(dateStr);
+
+            DateFormat destDf = new SimpleDateFormat("EE,dd MMM yyyy HH:mm a");
+
+            // format the date into another format
+            dateStr = destDf.format(date);
+
+
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateStr;
     }
 }

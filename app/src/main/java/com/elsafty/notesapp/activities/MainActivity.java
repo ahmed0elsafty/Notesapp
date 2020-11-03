@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.elsafty.notesapp.R;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
     ImageView imageAddNoteMain;
     @BindView(R.id.notes_recyclerView)
     RecyclerView notesRecyclerView;
+    @BindView(R.id.emptyView)
+    LinearLayout emptyView;
     private NoteAdapter mAdapter;
     private List<Note> mNotes;
     private int noteClickedPosition = -1;
@@ -131,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
                 showLinkDialog();
             }
         });
+
     }
 
     private void showLinkDialog() {
@@ -210,6 +214,11 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
             @Override
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
+                if (notes.size()==0){
+                    emptyView.setVisibility(View.VISIBLE);
+                }else {
+                    emptyView.setVisibility(View.GONE);
+                }
                 if (requestCode == REQUEST_CODE_SHOW_NOTES) {
                     mNotes.addAll(notes);
                     mAdapter.notifyDataSetChanged();

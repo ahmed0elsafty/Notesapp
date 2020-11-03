@@ -169,7 +169,7 @@
                     android:background="@drawable/ic_delete"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_delete"
-                    app:tint="@color/colorWhite"/>
+                    app:tint="@color/colorDelete"/>
 
             </LinearLayout>
 
