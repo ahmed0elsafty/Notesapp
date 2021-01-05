@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,6 +22,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -77,7 +79,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 720;
     private static final int REQUEST_CODE_SELECT_IMAGE = 246;
     private static final String TAG = CreateNoteActivity.class.getSimpleName();
-    private AlertDialog alertDialogAddUrl,alertDialogDeleteNote;
+    private AlertDialog alertDialogAddUrl, alertDialogDeleteNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,16 +93,16 @@ public class CreateNoteActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getBooleanExtra("isViewOrUpdate", false)) {
-                alreadyAvailablenote = (Note) intent.getSerializableExtra("note");
+                alreadyAvailablenote = intent.getParcelableExtra("note");
                 setViewORUpdateNote();
-            }else if (intent.getBooleanExtra("isFromQuickActions", false)){
+            } else if (intent.getBooleanExtra("isFromQuickActions", false)) {
                 String type = intent.getStringExtra("quickActionType");
-                if (type.toLowerCase().equals("image")){
+                if (type.toLowerCase().equals("image")) {
                     selectedImagePath = intent.getStringExtra("imagePath");
                     imageNote.setVisibility(View.VISIBLE);
                     imageNote.setImageBitmap(BitmapFactory.decodeFile(selectedImagePath));
                     findViewById(R.id.removeNoteImage).setVisibility(View.VISIBLE);
-                }else if (type.toLowerCase().equals("url")){
+                } else if (type.toLowerCase().equals("url")) {
                     linkText.setText(intent.getStringExtra("stringUrl"));
                     layoutAddLink.setVisibility(View.VISIBLE);
                     findViewById(R.id.removelink).setVisibility(View.VISIBLE);
@@ -194,6 +196,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.imageSave:
                 saveNote();
+                closeKeyboard();
                 break;
             case R.id.imageBack:
                 onBackPressed();
@@ -323,7 +326,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
-        if (alreadyAvailablenote !=null){
+        if (alreadyAvailablenote != null) {
             layoutMiscellaneous.findViewById(R.id.layout_delete).setVisibility(View.VISIBLE);
             layoutMiscellaneous.findViewById(R.id.layout_delete).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -336,7 +339,8 @@ public class CreateNoteActivity extends AppCompatActivity {
 
 
     }
-    private void showDeleteDialog(){
+
+    private void showDeleteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
         View view = LayoutInflater.from(CreateNoteActivity.this).inflate(R.layout.delete_dialog_layout,
                 (ViewGroup) findViewById(R.id.layout_deleteDialog));
@@ -350,7 +354,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 @SuppressLint("StaticFieldLeak")
-                class DeleteNoteAsyncTask extends AsyncTask<Void,Void,Void>{
+                class DeleteNoteAsyncTask extends AsyncTask<Void, Void, Void> {
 
                     @Override
                     protected Void doInBackground(Void... voids) {
@@ -362,8 +366,8 @@ public class CreateNoteActivity extends AppCompatActivity {
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
                         Intent intent = new Intent();
-                        intent.putExtra("isNoteDeleted",true);
-                        setResult(RESULT_OK,intent);
+                        intent.putExtra("isNoteDeleted", true);
+                        setResult(RESULT_OK, intent);
                         finish();
                     }
                 }
@@ -478,5 +482,14 @@ public class CreateNoteActivity extends AppCompatActivity {
             });
         }
         alertDialogAddUrl.show();
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (view != null) {
+            manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
     }
 }

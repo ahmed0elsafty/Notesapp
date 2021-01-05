@@ -7,8 +7,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,6 +16,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -25,28 +25,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.elsafty.notesapp.R;
-import com.elsafty.notesapp.adapters.NoteAdapter;
-import com.elsafty.notesapp.database.NoteDatabase;
-import com.elsafty.notesapp.entities.Note;
-import com.elsafty.notesapp.listeners.OnNoteClickedListener;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.elsafty.notesapp.R;
+import com.elsafty.notesapp.adapters.NoteAdapter;
+import com.elsafty.notesapp.database.NoteDatabase;
+import com.elsafty.notesapp.entities.Note;
+import com.elsafty.notesapp.listeners.OnNoteClickedListener;
+import com.elsafty.notesapp.listeners.OnNoteLongClickedListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements OnNoteClickedListener {
+public class MainActivity extends AppCompatActivity implements OnNoteClickedListener, OnNoteLongClickedListener {
 
     private static final int REQUEST_CODE_ADD_NOTE = 438;
     private static final int REQUEST_CODE_UPDATE_NOTE = 721;
@@ -71,14 +73,55 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
     private List<Note> mNotes;
     private int noteClickedPosition = -1;
     private AlertDialog alertDialogAddUrl;
+    private ActionMode mActionMode;
+    private ActionMode.Callback mCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ButterKnife.bind(this);
-        mAdapter = new NoteAdapter(this, this);
+        mAdapter = new NoteAdapter(this, this, this);
         mNotes = new ArrayList<>();
+        mCallback = new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                if (mActionMode != null) {
+                    return false;
+                }
+                mode.getMenuInflater().inflate(R.menu.main_actoin_mode, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.shareActionMenu:
+                        Toast.makeText(MainActivity.this, "Share Action", Toast.LENGTH_SHORT).show();
+                        mode.finish();
+                        return true;
+                    case R.id.deleteActionMenu:
+                        Toast.makeText(MainActivity.this, "Delete Action", Toast.LENGTH_SHORT).show();
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                mActionMode = null;
+            }
+        };
         imageAddNoteMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
     }
 
     private void getAllNotes(int requestCode, boolean isNoteDeleted) {
-        @SuppressLint("StaticFieldLeak")
+
         class GetNotesAsyncTask extends AsyncTask<Void, Void, List<Note>> {
 
             @Override
@@ -214,9 +257,9 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
             @Override
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
-                if (notes.size()==0){
+                if (notes.size() == 0) {
                     emptyView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     emptyView.setVisibility(View.GONE);
                 }
                 if (requestCode == REQUEST_CODE_SHOW_NOTES) {
@@ -239,6 +282,14 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
             }
         }
         new GetNotesAsyncTask().execute();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
     }
 
     @Override
@@ -289,5 +340,10 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickedList
         intent.putExtra("note", note);
         intent.putExtra("isViewOrUpdate", true);
         startActivityForResult(intent, REQUEST_CODE_UPDATE_NOTE);
+    }
+
+    @Override
+    public void onLongClicked(Note note, int position) {
+        mActionMode = startSupportActionMode(mCallback);
     }
 }

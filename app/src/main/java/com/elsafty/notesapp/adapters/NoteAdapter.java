@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.elsafty.notesapp.R;
 import com.elsafty.notesapp.entities.Note;
 import com.elsafty.notesapp.listeners.OnNoteClickedListener;
+import com.elsafty.notesapp.listeners.OnNoteLongClickedListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.text.DateFormat;
@@ -35,12 +36,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     private List<Note> items = new ArrayList<>();
     private final Context mContext;
     private OnNoteClickedListener onNoteClickedListener;
+    private OnNoteLongClickedListener onNoteLongClickedListener;
     private List<Note> searchNotes;
     private Timer timer;
+    private List<Note> selectedNotes;
 
-    public NoteAdapter(Context mContext, OnNoteClickedListener onNoteClickedListener) {
+    public NoteAdapter(Context mContext, OnNoteClickedListener onNoteClickedListener, OnNoteLongClickedListener onNoteLongClickedListener) {
         this.mContext = mContext;
         this.onNoteClickedListener = onNoteClickedListener;
+        this.onNoteLongClickedListener = onNoteLongClickedListener;
     }
 
     @NonNull
@@ -56,6 +60,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             @Override
             public void onClick(View v) {
                 onNoteClickedListener.onClick(items.get(position), position);
+            }
+        });
+        holder.layoutNote.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onNoteLongClickedListener.onLongClicked(items.get(position), position);
+                return true;
             }
         });
     }
@@ -151,7 +162,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             timer.cancel();
         }
     }
-    private String parseDate(String dateStr){
+
+    private String parseDate(String dateStr) {
 
         try {
 
@@ -166,8 +178,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             dateStr = destDf.format(date);
 
 
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return dateStr;

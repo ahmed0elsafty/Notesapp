@@ -1,5 +1,8 @@
 package com.elsafty.notesapp.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 import androidx.annotation.NonNull;
@@ -8,7 +11,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "notes")
-public class Note implements Serializable {
+public class Note implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -32,6 +35,33 @@ public class Note implements Serializable {
 
     @ColumnInfo(name = "web_link")
     private String webLink;
+
+    public Note(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        dateTime = in.readString();
+        subtitle = in.readString();
+        noteText = in.readString();
+        imagePath = in.readString();
+        color = in.readString();
+        webLink = in.readString();
+    }
+
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
+        @Override
+        public Note createFromParcel(Parcel in) {
+            return new Note(in);
+        }
+
+        @Override
+        public Note[] newArray(int size) {
+            return new Note[size];
+        }
+    };
+
+    public Note() {
+
+    }
 
     public int getId() {
         return id;
@@ -101,5 +131,22 @@ public class Note implements Serializable {
     @Override
     public String toString() {
         return title + " : " + dateTime;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(dateTime);
+        dest.writeString(subtitle);
+        dest.writeString(noteText);
+        dest.writeString(imagePath);
+        dest.writeString(color);
+        dest.writeString(webLink);
     }
 }
